@@ -3,6 +3,7 @@ This image's entrypoint is meant for running shell commands in docker containers
 
 CLI Tools included:
 - docker
+- docker-compose
 - kubectl
 - helm
 - k3d
@@ -10,7 +11,7 @@ CLI Tools included:
 
 ## Usage: directly via docker
 ```
-docker run kamalook/docker-init "echo hello" "echo world"
+docker run xertz/cloud-tools "echo hello" "echo world"
 ```
 
 ## Usage: via docker-compose
@@ -19,7 +20,7 @@ version: "3"
 
 services:
   init:
-    image: kamalook/docker-init
+    image: xertz/cloud-tools
     command:
       - echo hello
       - echo world
