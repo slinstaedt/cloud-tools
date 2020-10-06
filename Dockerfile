@@ -9,7 +9,8 @@ RUN chmod a+x *
 
 FROM alpine:3
 COPY --from=build /usr/local/bin/* /usr/local/bin/
-RUN apk add --no-cache docker-cli docker-compose
+RUN apk add --no-cache docker-cli docker-compose py3-pip
+RUN pip3 install yq
 ENV INIT_DIR=/initialized
 VOLUME $INIT_DIR
 COPY docker-entrypoint.sh /usr/local/bin/
