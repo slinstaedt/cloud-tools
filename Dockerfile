@@ -8,9 +8,10 @@ RUN curl -sSLo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-linux-amd64
 RUN chmod a+x *
 
 FROM alpine:3
-COPY --from=build /usr/local/bin/* /usr/local/bin/
-RUN apk add --no-cache ansible docker-cli docker-compose jq py3-pip
+RUN apk add --no-cache ansible docker-cli jq py3-pip
 RUN pip3 install yq
+COPY --from=docker/compose:1.26.2 /usr/local/bin/docker-compose /usr/local/bin/
+COPY --from=build /usr/local/bin/* /usr/local/bin/
 ENV INIT_DIR=/initialized
 VOLUME $INIT_DIR
 COPY docker-entrypoint.sh /usr/local/bin/
