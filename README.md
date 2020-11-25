@@ -8,6 +8,7 @@ CLI Tools included:
 - helm
 - k3d
 - kind
+- drone cli
 
 ## Usage: directly via docker
 ```
