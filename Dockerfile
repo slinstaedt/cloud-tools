@@ -1,18 +1,17 @@
-FROM alpine:3 AS build
+FROM alpine:3
 WORKDIR /usr/local/bin/
-RUN apk add --no-cache bash curl openssl
-RUN curl -sSLO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+RUN apk add --no-cache bash curl openssl openssh-client jq py3-pip
+RUN pip3 install yq
+RUN curl -sSLo ./kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+RUN curl -sSLo ./kind $(curl -s https://api.github.com/repos/kubernetes-sigs/kind/releases/latest | grep browser_download_url | grep linux-amd64 | cut -d '"' -f 4)
 RUN curl -sSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 RUN curl -sSL https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
-RUN curl -sSLo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-linux-amd64
+COPY --from=docker /usr/local/bin/docker /usr/local/bin/
+COPY --from=docker/compose:1.27.4 /usr/local/bin/docker-compose /usr/local/bin/
 RUN chmod a+x *
 
-FROM alpine:3
-RUN apk add --no-cache openssh-client ansible docker-cli jq py3-pip
-RUN pip3 install yq
-COPY --from=docker/compose:1.26.2 /usr/local/bin/docker-compose /usr/local/bin/
-COPY --from=build /usr/local/bin/* /usr/local/bin/
 ENV INIT_DIR=/initialized
 VOLUME $INIT_DIR
 COPY docker-entrypoint.sh /usr/local/bin/
+
 ENTRYPOINT [ "docker-entrypoint.sh" ]
