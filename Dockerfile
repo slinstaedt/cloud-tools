@@ -11,7 +11,7 @@ RUN curl -sSL https://raw.githubusercontent.com/rancher/k3d/main/install.sh | ba
 RUN chmod a+x *
 
 FROM alpine:3
-RUN apk add --no-cache openssh-client jq py3-pip
+RUN apk add --no-cache git openssh-client jq py3-pip
 COPY --from=build /usr/local/bin/* /usr/local/bin/
 RUN pip3 install yq
 ENV INIT_DIR=/initialized
